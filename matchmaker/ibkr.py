@@ -155,7 +155,10 @@ def import_open_positions(file: io.BytesIO, date_from: pd.Timestamp, date_to: pd
         # Current Price,Mark-to-Market P/L Position,Mark-to-Market P/L Transaction,Mark-to-Market P/L Commissions,Mark-to-Market P/L Other,Mark-to-Market P/L Total,Code
         df = pd.DataFrame(columns=['Mark-to-Market Performance Summary', 'Header', 'Asset Category', 'Symbol', 'Prior Quantity', 'Current Quantity', 'Prior Price', 'Current Price',
                                 'Mark-to-Market P/L Position','Mark-to-Market P/L Transaction','Mark-to-Market P/L Commissions','Mark-to-Market P/L Other','Mark-to-Market P/L Total','Code'])
-    df = df[df['Asset Category'] == 'Stocks']
+    df = df[(df['Asset Category'] == 'Stocks') | (df['Asset Category'] == 'Equity and Index Options')]
+    df['Option Name'] = df[df['Asset Category'] == 'Equity and Index Options']['Symbol']
+    df['Display Suffix'] = ''
+    df = convert_option_names(df)
     df.drop(columns=['Mark-to-Market Performance Summary', 'Header', 'Asset Category', 'Code'], inplace=True)
     df['Prior Date'] = date_from
     df['Current Date'] = date_to

@@ -48,7 +48,7 @@ def check_open_position_mismatches(trades: pd.DataFrame, positions: pd.DataFrame
         Tuple[pd.DataFrame, pd.DataFrame]: Misaligned positions, guessed renames
     """
     time_points = positions[(positions['Quantity'] != 0) & (positions['Date'] <= max_date)].groupby(['Date', 'Account'])
-    mismatches = pd.DataFrame(columns=['Ticker', 'Currency', 'Date'])
+    mismatches = pd.DataFrame(columns=['Ticker', 'Display Name', 'Currency', 'Date'])
     for (time, account), snapshot in time_points:
         # Join and check for quantity mismatches or missing symbols
         time = pd.Timestamp(time).replace(hour=23, minute=59, second=59) # Position snapshots are taken at the end of the day
