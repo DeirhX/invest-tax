@@ -91,6 +91,17 @@ def page():
                                     'Accumulated Quantity': st.column_config.NumberColumn("Position")
                                     })
     
+    dividends = state.dividends[state.dividends['Date'].dt.year == show_year]
+    if not dividends.empty:
+        # Group dividends by currency and sum the amounts
+        sums = dividends.groupby(['Currency']).agg({'Amount': 'sum'}).reset_index()
+        # Convert into a line of text
+        dividend_summary = ', '.join([f'{row["Amount"]:.0f} {row["Currency"]}' for _, row in sums.iterrows()])
+        with st.expander(f'Celkový zisk z dividend: :green[{dividend_summary}]  ({dividends["Tax Percent"].abs().mean():.0f}% průměrná daň)]'):
+            table_descriptor = ux.dividends_table_descriptor()
+            st.dataframe(dividends, hide_index=True, column_config=table_descriptor['column_config'], column_order=table_descriptor['column_order'])
+    
+   
     unpaired_sells = state.pairings.unpaired[state.pairings.unpaired['Action'] == 'Close']
     unpaired_sells = unpaired_sells[(unpaired_sells['Year'] == show_year)]
     if not unpaired_sells.empty:
