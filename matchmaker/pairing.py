@@ -160,7 +160,9 @@ def pair_buy_sell(trades: pd.DataFrame, pairs: pd.DataFrame, strategy: str, from
     
     trades = fill_trades_covered_quantity(trades, pairs)
     # trades.round(3).to_csv('paired.order.quantities.csv')
-    per_symbol = trades.groupby('Display Name')
+    per_symbol = trades.sort_values(by='Date/Time').groupby('Display Name')
+    # Sort by date_time
+    
     if pairs is None:
         pairs = pd.DataFrame(columns=['Buy Transaction', 'Sell Transaction', 'Display Name', 'Quantity', 'Buy Time', 'Buy Price', 'Sell Time', 'Sell Price', 'Buy Cost', 'Sell Proceeds', 'Revenue', 'Ratio', 'Type', 'Taxable'])
     for symbol, group in per_symbol:
