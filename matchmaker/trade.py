@@ -21,7 +21,7 @@ def convert_trade_columns(df: pd.DataFrame) -> pd.DataFrame:
         df['Manual'] = False
     if 'Action' not in df.columns and 'Code' in df.columns:
         def determine_action(code):
-            actions = code.split(';')
+            actions = code.strip().split(';')
             if 'O' in actions or 'Ca' in actions:
                 if 'C' in actions:
                     return 'Close/Open'
@@ -41,7 +41,7 @@ def convert_trade_columns(df: pd.DataFrame) -> pd.DataFrame:
             return None
         if row['Action'] == 'Transfer':
             return 'In' if row['Quantity'] > 0 else 'Out'
-        codes = row['Code'].split(';') if 'Code' in row else []
+        codes = row['Code'].strip().split(';') if 'Code' in row else []
         if 'Ex' in codes:
             return 'Exercised'
         if 'Ep' in codes:
