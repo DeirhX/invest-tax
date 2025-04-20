@@ -80,6 +80,7 @@ class State:
         self.symbols = pd.concat([self.symbols, new_symbols]).drop_duplicates()
         # Auto-generated symbols need to yield priority to possibly manually added symbols
         self.symbols = self.symbols[~self.symbols.duplicated(keep='first')]
+        self.symbols['Change Date'] = pd.to_datetime(self.symbols['Change Date'])
 
         if len(added_trades) > 0:
             trade.adjust_for_splits(added_trades, self.actions)
